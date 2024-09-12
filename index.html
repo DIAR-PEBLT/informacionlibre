@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operación y Mantenimiento</title>
+
+    <!-- Incluyendo los estilos de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        /* Tamaño del body */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* El mapa en todo el espacio disponible */
+        #map {
+            height: 100%; /* Ajuste para que ocupe el 100% del contenedor */
+            width: 100%; /* Ajuste para que ocupe el 100% del ancho */
+        }
+    </style>
+</head>
+<body>
+    <!-- Div contenedor del mapa -->
+    <div id="map"></div>
+
+    <!-- Incluyendo la librería de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Inicializa el mapa centrado en Lima, Perú
+        var map = L.map('map').setView([-15.733820, -70.727931], 13);
+
+        // Añade una capa base de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Añade un marcador en Lima con un popup
+        L.marker([-15.733820, -70.727931]).addTo(map)
+            .bindPopup('Presa Lagunillas')
+            .openPopup();
+
+        // Si tienes datos GeoJSON (ejemplo en código), los puedes integrar aquí
+        var geojsonData = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [-77.048, -12.045],
+                                [-77.049, -12.046],
+                                [-77.047, -12.047],
+                                [-77.048, -12.045]
+                            ]
+                        ]
+                    },
+                    "properties": {
+                        "name": "Ejemplo de Polígono"
+                    }
+                }
+            ]
+        };
+
+        // Añadir el GeoJSON al mapa
+        L.geoJSON(geojsonData).addTo(map);
+    </script>
+</body>
+</html>
