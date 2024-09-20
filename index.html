@@ -24,11 +24,6 @@
     <!-- #### Script para el plugin de posición del ratón -->
     <script src="./js/L.Control.MousePosition.js"></script>
 
-
-
-
-
-
     <style>
         /* Tamaño del body */
         
@@ -42,27 +37,37 @@
         
         #map {
             height: 100%;
-            /* Ajuste para que ocupe el 100% del contenedor */
             width: 100%;
-            /* Ajuste para que ocupe el 100% del ancho */
         }
         /* Modificando la clase .leaflet-tooltip para cambiar el tamaño y estilo de las etiquetas */
         
         .leaflet-tooltip {
             font-size: 10px;
-            /* Tamaño de la fuente */
             font-weight: bold;
-            /* Negrita */
             color: black;
-            /* Color del texto */
             background-color: white;
-            /* Fondo blanco */
             border: 1px solid black;
-            /* Borde negro */
             padding: 3px;
-            /* Espaciado interno */
             border-radius: 5px;
-            /* Bordes redondeados */
+        }
+        /* Botón de descarga */
+        
+        .download-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        
+        .download-btn:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -70,6 +75,11 @@
 <body>
     <!-- Div contenedor del mapa -->
     <div id="map"></div>
+
+    <!-- Botón de descarga -->
+    <a href="./data/Bat_lagunillas_2019.gpkg" download="Bat_lagunillas_2019.gpkg">
+        <button class="download-btn">Descargar Geopackage</button>
+    </a>
 
     <script>
         // Inicializa el mapa centrado Lagunillas
@@ -80,22 +90,20 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-
         // Definir el estilo para las geometrías
         function estilo(feature) {
             return {
-                color: 'black', // Color de los bordes
-                weight: 1, // Ancho de los bordes
-                opacity: 0.5, // Opacidad de los bordes
-                fillColor: 'black', // Color de relleno
-                fillOpacity: 0.5 // Opacidad del relleno
+                color: 'black',
+                weight: 1,
+                opacity: 0.5,
+                fillColor: 'black',
+                fillOpacity: 0.5
             };
         }
 
         // Función para agregar etiquetas a cada geometría
         function onEachFeature(feature, layer) {
             if (feature.properties && feature.properties.elevacion) {
-                // Agregar una etiqueta con el nombre de la propiedad
                 layer.bindTooltip(feature.properties.elevacion, {
                     permanent: true,
                     direction: "center"
@@ -104,41 +112,38 @@
         }
 
         // Carga del archivo GeoJSON con estilo y etiquetas
-        fetch('./data/Bat_lagunillas_2019.geojson') // Ruta de tu archivo GeoJSON
+        fetch('./data/Bat_lagunillas_2019.geojson')
             .then(function(response) {
                 return response.json();
             })
             .then(function(data) {
-                // Añadir la capa GeoJSON al mapa con estilo y etiquetas
                 var geojsonLayer = L.geoJSON(data, {
-                    style: estilo, // Aplica la función de estilo
-                    onEachFeature: onEachFeature // Aplica la función de etiquetas
+                    style: estilo,
+                    onEachFeature: onEachFeature
                 }).addTo(map);
-
-                // Ajustar la vista del mapa para que se ajuste a la extensión del GeoJSON
                 map.fitBounds(geojsonLayer.getBounds());
             })
             .catch(function(error) {
                 console.error('Error al cargar el GeoJSON:', error);
             });
 
-
-        // Capa base para el minimapa (usualmente la misma que la del mapa principal)
+        // Capa base para el minimapa
         var miniMapLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
 
-        // Crear el minimapa y agregarlo al mapa principal
+        // Crear el minimapa
         var miniMap = new L.Control.MiniMap(miniMapLayer, {
-            toggleDisplay: true, // Añadir botón para mostrar/ocultar el minimapa
-            minimized: false, // Si se quiere que el minimapa esté abierto por defecto
-            position: 'bottomright' // Posición del minimapa en la esquina inferior derecha
+            toggleDisplay: true,
+            minimized: false,
+            position: 'bottomright'
         }).addTo(map);
 
         //visualización de coordenadas del mouse
         L.control.mousePosition({
             position: 'bottomleft',
         }).addTo(map);
+
         //barra de escala
         L.control.scale({
             position: 'bottomleft',
